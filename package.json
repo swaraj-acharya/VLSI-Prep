@@ -1,0 +1,29 @@
+{
+  "name": "signoff-vlsi",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Signoff: a personal VLSI training system. Daily plan, revision, projects, proof of work.",
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "npm run validate",
+    "build": "next build",
+    "start": "next start",
+    "validate": "node --experimental-strip-types --no-warnings scripts/validate.ts",
+    "check-links": "node --experimental-strip-types --no-warnings scripts/check-links.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "16.3.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=22.6"
+  }
+}
