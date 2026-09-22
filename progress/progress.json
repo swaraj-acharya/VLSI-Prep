@@ -13,7 +13,7 @@
     "done": {},
     "tasks": {
       "1": {
-        "learn": true
+        "learn": false
       }
     }
   },
@@ -36,7 +36,9 @@
     "branch": "main",
     "path": "progress",
     "autoSync": true,
-    "includeNotes": false
+    "includeNotes": false,
+    "lastSync": "2026-09-22T20:42:21.650Z",
+    "lastStatus": "Pushed to swaraj-acharya/VLSI-Prep/progress at 02:12:21."
   },
   "log": [
     {
@@ -49,5 +51,5 @@
     }
   ],
   "app": "signoff-vlsi",
-  "exportedAt": "2026-09-22T20:42:19.406Z"
+  "exportedAt": "2026-09-22T20:43:19.709Z"
 }
