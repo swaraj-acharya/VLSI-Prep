@@ -26,6 +26,15 @@ function Logo() {
   );
 }
 
+/** Plain form POST so it works even before JavaScript loads. */
+export function SignOut({ className = "btn sm ghost" }: { className?: string }) {
+  return (
+    <form method="post" action="/api/auth/logout" style={{ margin: "10px 2px 0" }}>
+      <button type="submit" className={className}>Sign out</button>
+    </form>
+  );
+}
+
 function isOn(path: string, href: string) {
   return href === "/" ? path === "/" : path === href || path.startsWith(href + "/");
 }
@@ -75,6 +84,9 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => { setMoreOpen(false); }, [path]);
 
+  // The sign-in page renders on its own, without navigation or search.
+  if (path === "/login") return <main id="content">{children}</main>;
+
   const navList = (
     <nav aria-label="Main">
       {NAV.map((g) => (
@@ -104,6 +116,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <button className="searchbtn" onClick={() => setSearchOpen(true)}><span className="row" style={{ gap: 6 }}><Icon name="search" size={16} /> Search</span><kbd>Ctrl K</kbd></button>
           {navList}
           <p className="tiny muted" style={{ margin: "6px 6px 0" }}>{st.current} day streak, longest {st.longest}</p>
+          <SignOut />
         </aside>
         <main id="content" className="main" tabIndex={-1}>{children}</main>
       </div>

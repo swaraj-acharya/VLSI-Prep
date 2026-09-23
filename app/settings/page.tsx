@@ -6,6 +6,7 @@ import { actions, STORAGE_KEY, SCHEMA_VERSION, useHydrated, useStore, type Inten
 import { PLAN_LENGTH } from "@/lib/plan";
 import { RULES } from "@/lib/revision";
 import { Loading, PageHead, Seg } from "@/components/ui";
+import { SignOut } from "@/components/AppShell";
 import { getToken, setToken, syncProgress, testConnection, TOKEN_KEY } from "@/lib/github";
 
 export default function SettingsPage() {
@@ -36,7 +37,7 @@ export default function SettingsPage() {
 
   return (
     <div className="page narrow">
-      <PageHead title="Settings">Everything is stored in this browser under the key <code>{STORAGE_KEY}</code> (schema v{SCHEMA_VERSION}). No account, no server.</PageHead>
+      <PageHead title="Settings">Everything is stored in this browser under the key <code>{STORAGE_KEY}</code> (schema v{SCHEMA_VERSION}). Access is protected by the sign-in page; your progress itself never leaves this browser unless you use GitHub sync.</PageHead>
       <p className="sr-only" aria-live="polite">{msg}</p>
       {msg && <div className="callout small">{msg}</div>}
 
@@ -87,6 +88,11 @@ export default function SettingsPage() {
           <button className="btn danger" onClick={() => { setToken(""); setTok(""); setMsg("Token removed from this browser."); }}>Remove token</button>
         </div>
         {s.github.lastStatus && <p className="tiny muted" style={{ marginTop: 8 }}>Last result: {s.github.lastStatus}</p>}
+      </section>
+
+      <section className="panel"><h2>Sign-in</h2>
+        <p className="small muted">This site is protected by an id and password set on the host (<code>AUTH_ID</code>, <code>AUTH_PASSWORD</code>). A sign-in lasts 7 days on each browser. Changing the password on the host signs every browser out.</p>
+        <SignOut className="btn" />
       </section>
 
       <section className="panel"><h2>Revision rules</h2><ul className="list small">{RULES.map((r) => <li key={r}>{r}</li>)}</ul></section>

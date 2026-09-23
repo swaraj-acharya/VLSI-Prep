@@ -10,7 +10,8 @@ Requirements: Node.js 22.6 or newer (the content scripts use Node's built-in Typ
 
 ```bash
 npm install
-npm run dev          # http://localhost:3000
+cp .env.example .env.local   # then set AUTH_ID and AUTH_PASSWORD
+npm run dev                  # http://localhost:3000
 ```
 
 Other scripts:
@@ -26,10 +27,33 @@ Other scripts:
 ## Deploy (GitHub to Vercel)
 
 1. Create a GitHub repository and push this folder (`git init`, `git add .`, `git commit -m "Signoff"`, `git remote add origin <your repo>`, `git push -u origin main`).
-2. In Vercel, choose **Add New → Project**, import the repository and accept the detected Next.js settings. No environment variables are needed.
+2. In Vercel, choose **Add New → Project**, import the repository and accept the detected Next.js settings. Add the sign-in environment variables described below before the first deploy.
 3. Every push to `main` redeploys. If a content edit breaks a reference, the `prebuild` validation fails the deploy instead of shipping a broken link, and the Vercel build log names the problem.
 
-There is no database, authentication or server state. Everything is stored in the visitor's browser, so the deployed site can be shared safely: each person gets their own local progress.
+There is no database or server state. Everything is stored in the visitor's browser; the only server-side piece is the sign-in gate below.
+
+## Sign-in
+
+Every page is behind a sign-in page at `/login`. The id and password are environment variables on the host, never in the repository:
+
+| Variable | Required | Meaning |
+| --- | --- | --- |
+| `AUTH_ID` | yes | The login id |
+| `AUTH_PASSWORD` | yes | The password |
+| `AUTH_SECRET` | no | Extra signing secret, any long random string (`openssl rand -hex 32`) |
+
+On Vercel: **Project → Settings → Environment Variables**, add them for Production (and Preview if you use preview links), then **redeploy**, because environment variables only apply to new deployments. Secrets saved under GitHub's *Settings → Secrets and variables → Actions* are only visible to GitHub Actions workflows; Vercel's GitHub integration does not read them.
+
+How it works:
+
+- `proxy.ts` (Next.js 16's name for middleware) runs on the server before every page. Without a valid session cookie it redirects to `/login?next=<page>`, and after signing in you land back on that page.
+- A correct login sets an `httpOnly`, `SameSite=Lax` cookie (`Secure` on HTTPS) named `signoff_auth` that lasts **7 days**. It holds only an expiry time and an HMAC-SHA256 signature; the password is never stored in the browser. When it expires you are sent to the sign-in page again.
+- Changing `AUTH_ID`, `AUTH_PASSWORD` or `AUTH_SECRET` (and redeploying) signs out every browser at once.
+- **Sign out** is in the sidebar and in Settings.
+- If the variables are missing the site fails closed: every page redirects to `/login`, which says sign-in is not configured.
+- Failed attempts wait 0.8 s before answering. There is no lockout (the site is stateless), so use a long password.
+
+The sign-in only controls access to the site. Progress is still stored per browser, exactly as before.
 
 ## How the app is organised
 
