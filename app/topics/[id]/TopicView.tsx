@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { MODULES, PHASES } from "@/content/phases";
+import { ALL_PHASES, MODULES, phaseHref, phaseLabel } from "@/content/phases";
 import { TOPIC_MAP, UNLOCKS } from "@/content/topics";
 import { RESOURCE_MAP } from "@/content/resources";
 import { FLAGSHIP_MAP } from "@/content/flagship";
@@ -62,7 +62,7 @@ export default function TopicView({ id }: { id: string }) {
     const h = window.location.hash.slice(1);
     if (TABS.some((x) => x.id === h)) setTab(h);
   }, []);
-  const phase = PHASES.find((p) => p.id === t.phase)!;
+  const phase = ALL_PHASES.find((p) => p.id === t.phase)!;
   const mod = MODULES.find((m) => m.id === t.module)!;
   const st = s.topics[id];
   const done = st?.status === "done";
@@ -75,7 +75,7 @@ export default function TopicView({ id }: { id: string }) {
 
   return (
     <div className="page">
-      <div className="crumbs"><Link href="/roadmap">Roadmap</Link> / Phase {phase.num}: {phase.short} / {mod.title}</div>
+      <div className="crumbs"><Link href={phase.program === "embedded" ? "/embedded" : "/roadmap"}>{phase.program === "embedded" ? "Embedded road" : "Roadmap"}</Link> / <Link href={phaseHref(phase)}>{phaseLabel(phase)}: {phase.short}</Link> / {mod.title}{mod.branch ? " (optional branch)" : ""}</div>
       <div className="between" style={{ alignItems: "flex-start" }}>
         <div style={{ flex: "1 1 460px" }}>
           <h1>{t.title}</h1>

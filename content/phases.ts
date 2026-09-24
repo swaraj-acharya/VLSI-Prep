@@ -33,7 +33,7 @@ export const MODULES: Module[] = [
   { id: "m3b", phase: "p3", title: "Performance and pipelining", summary: "Measuring performance, pipelines, hazards, prediction.", topics: ["performance", "pipelining", "hazards", "branch-prediction"] },
   { id: "m3c", phase: "p3", title: "Memory hierarchy", summary: "Locality, virtual memory and caches.", topics: ["memory-hierarchy", "caches"] },
   { id: "m3d", phase: "p3", title: "Systems", summary: "I/O, interrupts, buses and SoCs.", topics: ["io-interrupts", "soc-buses"] },
-  { id: "m4a", phase: "p4", title: "Thinking in hardware", summary: "Verilog as a description of circuits.", topics: ["hdl-mindset", "verilog-basics", "verilog-operators", "comb-modeling", "seq-modeling", "blocking-nonblocking", "latch-inference", "hierarchy-generate"] },
+  { id: "m4a", phase: "p4", title: "Thinking in hardware", summary: "Verilog as a description of circuits.", topics: ["hdl-mindset", "verilog-basics", "verilog-operators", "comb-modeling", "seq-modeling", "blocking-nonblocking", "latch-inference", "hierarchy-generate", "rtl-hw-mapping"] },
   { id: "m4b", phase: "p4", title: "Simulation", summary: "Testbenches, waveforms, simulator semantics, Verilator.", topics: ["testbench-basics", "waveform-debug", "sim-semantics", "verilator-lint"] },
   { id: "m4c", phase: "p4", title: "SystemVerilog for design", summary: "Types, procedural blocks, interfaces and packages.", topics: ["sv-design", "sv-interfaces-packages"] },
   { id: "m4d", phase: "p4", title: "SystemVerilog for verification", summary: "OOP, randomization and concurrency.", topics: ["sv-oop", "sv-random", "sv-concurrency"] },
@@ -94,9 +94,67 @@ export const TARGET_LABELS: Record<string, string> = {
   rtl: "RTL design", dv: "Design verification", pd: "Physical design", dft: "DFT", fpga: "FPGA", aihw: "AI hardware", eda: "EDA",
 };
 
-/** The single main road. Track topics are resolved at runtime from the specialization choice. */
-export const MAIN_ROAD: string[] = MODULES.filter((m) => !m.track).flatMap((m) => m.topics);
+/** The single main (VLSI) road. Track topics are resolved at runtime from the specialization choice. Embedded modules are excluded. */
+export const MAIN_ROAD: string[] = MODULES.filter((m) => !m.track && !m.phase.startsWith("e")).flatMap((m) => m.topics);
 
 /** Days reserved for specialization after the gate: primary track, then a compressed secondary track. */
 export const PRIMARY_SLOT_DAYS = 7;
 export const SECONDARY_SLOT_DAYS = 4;
+
+// ---------------------------------------------------------------------------------------------
+// Embedded Engineering road (added 2026-09-24). Self-paced: it does not change the VLSI day plan.
+// Default path: C -> MCU -> bare metal -> peripherals -> interrupts/DMA -> debugging -> RTOS ->
+// networking -> boot/OTA/security -> Linux/BSP -> specialization. Branch modules are optional.
+// ---------------------------------------------------------------------------------------------
+export const EMBEDDED_PHASES: Phase[] = [
+  { id: "e0", num: 0, program: "embedded", title: "Orientation, lab and electronics for firmware", short: "Orientation", stage: "I know what embedded engineers do, and my board or emulator works.", goal: "Choose a role direction, set up one board plus an emulator and a minimal instrument kit, and learn the electronics firmware depends on.", modules: ["e0a", "e0b"] },
+  { id: "e1", num: 1, program: "embedded", title: "C for embedded engineers", short: "C", stage: "I write C that is safe next to hardware.", goal: "Build model, memory layout, bit manipulation and volatile, undefined behaviour, core firmware patterns and a disciplined C++ subset.", modules: ["e1a", "e1b"] },
+  { id: "e2", num: 2, program: "embedded", title: "MCU architecture and the toolchain", short: "MCU + toolchain", stage: "I can explain reset to main() from my own startup code.", goal: "Cortex-M core, memory map, exceptions and NVIC, assembly reading, cross toolchain, linker scripts, startup code and the CMSIS/HAL ladder.", modules: ["e2a", "e2b"] },
+  { id: "e3", num: 3, program: "embedded", title: "Bare-metal peripherals", short: "Peripherals", stage: "I drive peripherals from registers, then from the HAL, and know the difference.", goal: "GPIO, timers and PWM, UART, SPI and I2C, ADC, watchdog, RTC and internal flash.", modules: ["e3a"] },
+  { id: "e4", num: 4, program: "embedded", title: "Interrupts, DMA, drivers and power", short: "IRQ, DMA, drivers", stage: "I write interrupt-safe, DMA-driven, testable drivers.", goal: "Concurrency with interrupts, DMA as a first-class skill, driver design and low-power firmware.", modules: ["e4a"] },
+  { id: "e5", num: 5, program: "embedded", title: "Debugging, measurement and testing", short: "Debug + test", stage: "I measure instead of guessing and test without hardware.", goal: "GDB + OpenOCD + SWD/JTAG, fault forensics, instruments, host unit tests, emulators and HIL, CI and static analysis.", modules: ["e5a", "e5b"] },
+  { id: "e6", num: 6, program: "embedded", title: "Real-time systems and RTOS", short: "RTOS", stage: "I design RTOS applications that meet their deadlines.", goal: "Real-time analysis, kernel internals, FreeRTOS in practice, synchronisation and priority inversion, then Zephyr.", modules: ["e6a", "e6b"] },
+  { id: "e7", num: 7, program: "embedded", title: "Communication and networking", short: "Comms", stage: "My devices talk reliably and securely.", goal: "CAN, USB concepts, TCP/IP with lwIP, MQTT and TLS, Wi-Fi/BLE with ESP-IDF or Zephyr.", modules: ["e7a"] },
+  { id: "e8", num: 8, program: "embedded", title: "Production firmware: boot, update, security and reliability", short: "Production", stage: "My firmware can be updated safely, is secure by design and is diagnosable in the field.", goal: "Bootloaders, MCUboot secure boot and OTA, security engineering, power-loss-safe storage, performance and release engineering.", modules: ["e8a", "e8b"] },
+  { id: "e9", num: 9, program: "embedded", title: "Embedded Linux and BSP", short: "Linux/BSP", stage: "I can bring up Linux on a board and write its drivers.", goal: "Linux systems programming, boot chain, U-Boot, device tree, kernel drivers, Buildroot, then Yocto 6.0.", modules: ["e9a", "e9b"] },
+  { id: "e10", num: 10, program: "embedded", title: "Crossover, specialization and job readiness", short: "Specialize", stage: "I can work across hardware and firmware, have one specialization, and can prove it.", goal: "The VLSI + Embedded crossover, one optional branch (automotive, robotics, DSP, TinyML, bring-up), interviews and portfolio.", modules: ["e10x", "e10-auto", "e10-robot", "e10-dsp", "e10-ml", "e10-bringup", "e10c"] },
+];
+
+MODULES.push(
+  { id: "e0a", phase: "e0", title: "Orientation and lab", summary: "Role families, levels, board and emulator setup.", topics: ["emb-orientation", "emb-lab"] },
+  { id: "e0b", phase: "e0", title: "Electronics for firmware", summary: "Pins, pull-ups, bounce, supplies and measurement basics.", topics: ["emb-electronics"] },
+  { id: "e1a", phase: "e1", title: "C core", summary: "Build model, memory layout, bits and volatile, undefined behaviour.", topics: ["emb-c-build", "emb-c-memory", "emb-c-bits", "emb-c-ub"] },
+  { id: "e1b", phase: "e1", title: "Firmware patterns and C++", summary: "Ring buffers, state machines, event queues, pools; C++ decisions.", topics: ["emb-c-patterns", "emb-cpp"] },
+  { id: "e2a", phase: "e2", title: "Inside the MCU", summary: "Core, memory map, clocks, exceptions, assembly.", topics: ["emb-mcu-arch", "emb-exceptions", "emb-asm"] },
+  { id: "e2b", phase: "e2", title: "Toolchain and startup", summary: "Cross toolchain, linker scripts, startup code, CMSIS and HALs.", topics: ["emb-toolchain", "emb-linker-startup", "emb-cmsis-hal"] },
+  { id: "e3a", phase: "e3", title: "Peripherals from registers up", summary: "Do it with registers, then with the HAL, and compare.", topics: ["emb-gpio", "emb-timers", "emb-uart", "emb-spi-i2c", "emb-adc", "emb-wdt-flash"] },
+  { id: "e4a", phase: "e4", title: "Interrupts, DMA, drivers, power", summary: "Concurrency, data movement, driver design, energy.", topics: ["emb-interrupts", "emb-dma", "emb-drivers", "emb-power"] },
+  { id: "e5a", phase: "e5", title: "Debugging and measurement", summary: "GDB/OpenOCD, fault forensics, instruments.", topics: ["emb-gdb-openocd", "emb-faults", "emb-instruments"] },
+  { id: "e5b", phase: "e5", title: "Testing and CI", summary: "Host tests, emulators and HIL, CI and static analysis.", topics: ["emb-testing", "emb-emulation-hil", "emb-ci-static"] },
+  { id: "e6a", phase: "e6", title: "Real-time and FreeRTOS", summary: "Analysis, kernel internals, FreeRTOS, synchronisation.", topics: ["emb-realtime", "emb-rtos-kernel", "emb-freertos", "emb-rtos-sync"] },
+  { id: "e6b", phase: "e6", title: "Zephyr", summary: "The modern alternative, after FreeRTOS.", topics: ["emb-zephyr"] },
+  { id: "e7a", phase: "e7", title: "Buses, networks and radios", summary: "CAN, USB, TCP/IP, MQTT/TLS, wireless.", topics: ["emb-can", "emb-usb", "emb-tcpip", "emb-iot-proto", "emb-wireless"] },
+  { id: "e8a", phase: "e8", title: "Boot and update", summary: "Bootloaders, secure boot and OTA.", topics: ["emb-bootloader", "emb-ota"] },
+  { id: "e8b", phase: "e8", title: "Security and reliability", summary: "Security, storage, performance, production.", topics: ["emb-security", "emb-storage", "emb-performance", "emb-production"] },
+  { id: "e9a", phase: "e9", title: "Linux foundations", summary: "Systems programming, cross-compilation, boot chain.", topics: ["emb-linux-sys", "emb-linux-boot"] },
+  { id: "e9b", phase: "e9", title: "BSP", summary: "U-Boot, device tree, drivers, Buildroot, Yocto.", topics: ["emb-uboot", "emb-devicetree", "emb-linux-drivers", "emb-buildroot", "emb-yocto"] },
+  { id: "e10x", phase: "e10", title: "VLSI + Embedded crossover", summary: "From register map and RTL to driver and validation.", topics: ["emb-hwsw-crossover"] },
+  { id: "e10-auto", phase: "e10", title: "Branch: automotive", summary: "Diagnostics, AUTOSAR, functional safety.", topics: ["emb-automotive"], branch: "automotive" },
+  { id: "e10-robot", phase: "e10", title: "Branch: robotics and control", summary: "Motors, encoders, IMUs, PID.", topics: ["emb-control"], branch: "robotics" },
+  { id: "e10-dsp", phase: "e10", title: "Branch: embedded DSP", summary: "Filters, FFT, fixed point, CMSIS-DSP.", topics: ["emb-dsp"], branch: "dsp" },
+  { id: "e10-ml", phase: "e10", title: "Branch: TinyML", summary: "Quantised inference on MCUs.", topics: ["emb-tinyml"], branch: "tinyml" },
+  { id: "e10-bringup", phase: "e10", title: "Branch: board bring-up", summary: "New hardware, first firmware, stable platform.", topics: ["emb-bringup"], branch: "bringup" },
+  { id: "e10c", phase: "e10", title: "Job readiness", summary: "Interviews, numericals, portfolio.", topics: ["emb-interview", "emb-portfolio"] },
+);
+
+/** The core Embedded road in teaching order (branch modules excluded). */
+export const EMBEDDED_ROAD: string[] = EMBEDDED_PHASES.flatMap((p) => p.modules)
+  .map((id) => MODULES.find((m) => m.id === id)!)
+  .filter((m) => !m.branch)
+  .flatMap((m) => m.topics);
+
+/** Every phase of both programs, for lookups by id. PHASES stays VLSI-only because the day plan and gates depend on its order. */
+export const ALL_PHASES: Phase[] = [...PHASES, ...EMBEDDED_PHASES];
+export const isEmbeddedPhase = (id: string) => id.startsWith("e");
+export const phaseLabel = (p: Phase) => (p.program === "embedded" ? `Embedded E${p.num}` : `Phase ${p.num}`);
+export const phaseHref = (p: Phase) => (p.program === "embedded" ? `/embedded#${p.id}` : `/roadmap#${p.id}`);

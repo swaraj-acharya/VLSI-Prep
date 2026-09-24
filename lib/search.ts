@@ -1,5 +1,5 @@
 import { TOPICS } from "@/content/topics";
-import { PHASES } from "@/content/phases";
+import { ALL_PHASES, phaseHref, phaseLabel } from "@/content/phases";
 import { LEARNING_PROJECTS } from "@/content/projects";
 import { FLAGSHIPS } from "@/content/flagship";
 import { RESOURCES } from "@/content/resources";
@@ -17,7 +17,7 @@ let INDEX: Hit[] | null = null;
 
 function build(): Hit[] {
   return [
-    ...PHASES.map((p) => ({ type: "Phase", title: `Phase ${p.num}: ${p.title}`, sub: p.stage, href: `/roadmap#${p.id}`, text: `${p.title} ${p.goal}` })),
+    ...ALL_PHASES.map((p) => ({ type: "Phase", title: `${phaseLabel(p)}: ${p.title}`, sub: p.stage, href: phaseHref(p), text: `${p.title} ${p.goal}` })),
     ...TOPICS.map((t) => ({ type: "Topic", title: t.title, sub: t.why, href: `/topics/${t.id}`, text: `${t.title} ${t.terms.map((x) => x.join(" ")).join(" ")} ${t.why} ${t.skills.join(" ")}` })),
     ...FLAGSHIPS.map((f) => ({ type: "Flagship", title: f.title, sub: f.exceptional, href: `/projects/${f.id}`, text: `${f.title} ${f.categories.join(" ")} ${f.tools.join(" ")}` })),
     ...LEARNING_PROJECTS.map((p) => ({ type: "Project", title: p.title, sub: p.summary, href: `/projects/${p.id}`, text: `${p.title} ${p.tools.join(" ")}` })),

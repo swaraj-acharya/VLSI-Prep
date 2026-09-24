@@ -1,12 +1,18 @@
 import type { ProofStage } from "./schema.ts";
 
-export const PROOF_STAGES: { id: ProofStage; label: string }[] = [
+export const PROOF_STAGES: { id: ProofStage; label: string; embedded?: boolean }[] = [
   { id: "spec", label: "Specification" }, { id: "architecture", label: "Architecture" }, { id: "rtl", label: "RTL" },
   { id: "verification", label: "Verification" }, { id: "assertions", label: "Assertions" }, { id: "coverage", label: "Coverage" },
   { id: "simulation", label: "Simulation" }, { id: "synthesis", label: "Synthesis" }, { id: "timing", label: "Timing" },
   { id: "ppa", label: "PPA" }, { id: "documentation", label: "Documentation" }, { id: "github", label: "GitHub" },
   { id: "demo", label: "Demo" }, { id: "linkedin", label: "LinkedIn post" }, { id: "interview", label: "Interview ready" },
+  { id: "firmware", label: "Firmware implemented and reviewed", embedded: true },
+  { id: "measurement", label: "Measured on hardware (captures, timing, power)", embedded: true },
+  { id: "ci", label: "CI: build, tests and static analysis", embedded: true },
+  { id: "release", label: "Versioned release with artifacts", embedded: true },
 ];
+/** Default proof stages for flagships without an explicit list (the original VLSI set). */
+export const DEFAULT_PROOF: ProofStage[] = PROOF_STAGES.filter((x) => !x.embedded).map((x) => x.id);
 
 export const SHOWCASE_ITEMS = [
   { id: "readme", label: "GitHub README (summary, how to run, results)" },

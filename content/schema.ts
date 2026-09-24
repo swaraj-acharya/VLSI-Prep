@@ -6,7 +6,8 @@ export type Depth = "awareness" | "basic" | "working" | "advanced" | "research";
 export type Kind = "theory" | "coding" | "tool" | "project" | "career";
 export type SkillId =
   | "digital" | "hdl" | "rtl" | "verification" | "timing" | "asic" | "pd" | "dft" | "arch"
-  | "linux" | "python" | "tcl" | "cpp" | "protocols" | "riscv" | "aihw" | "eda" | "interview";
+  | "linux" | "python" | "tcl" | "cpp" | "protocols" | "riscv" | "aihw" | "eda" | "interview"
+  | "firmware" | "rtos" | "emblinux";
 export type TrackId = "rtl" | "dv" | "pd" | "dft" | "fpga" | "ams" | "validation" | "eda" | "arch";
 export type RoleTarget = "rtl" | "dv" | "pd" | "dft" | "fpga" | "aihw" | "eda";
 
@@ -21,6 +22,8 @@ export interface Phase {
   modules: string[];
   /** Mastery gate shown before entering the phase (soft lock). */
   gate?: string;
+  /** Which curriculum the phase belongs to. Omitted means the VLSI road; embedded phases are self-paced. */
+  program?: "vlsi" | "embedded";
 }
 
 export interface Module {
@@ -30,6 +33,8 @@ export interface Module {
   summary: string;
   topics: string[];
   track?: TrackId;
+  /** Optional specialization branch of the Embedded road (not part of the core embedded path). */
+  branch?: string;
 }
 
 export interface InterviewQ {
@@ -46,7 +51,7 @@ export interface Visual {
 }
 
 export interface CodeSample {
-  lang: "verilog" | "systemverilog" | "python" | "tcl" | "c" | "bash" | "text";
+  lang: "verilog" | "systemverilog" | "python" | "tcl" | "c" | "cpp" | "asm" | "dts" | "bash" | "text";
   src: string;
   note?: string;
 }
@@ -131,12 +136,13 @@ export interface Milestone {
   evidence?: string;
 }
 
-export type ProjectTier = "micro" | "mini" | "flagship" | "research" | "open-silicon";
+export type ProjectTier = "micro" | "mini" | "weekend" | "flagship" | "research" | "open-silicon";
 
 export interface LearningProject {
   id: string;
   title: string;
-  tier: "micro" | "mini";
+  /** micro: 30 min-6 h; weekend: 6-16 h; mini: phase consolidation (15-30 h). */
+  tier: "micro" | "mini" | "weekend";
   phase: string;
   afterTopic: string;
   summary: string;
@@ -147,11 +153,20 @@ export interface LearningProject {
   tools: string[];
   hours: number;
   stretch?: string;
+  level?: "beginner" | "intermediate" | "advanced";
+  /** Board, instruments and the emulator-only option, if any. */
+  hardware?: string;
+  /** How to prove the result is correct. */
+  verify?: string;
+  expected?: string;
+  /** Interview concepts the project lets you talk about. */
+  concepts?: string[];
 }
 
 export type ProofStage =
   | "spec" | "architecture" | "rtl" | "verification" | "assertions" | "coverage" | "simulation"
-  | "synthesis" | "timing" | "ppa" | "documentation" | "github" | "demo" | "linkedin" | "interview";
+  | "synthesis" | "timing" | "ppa" | "documentation" | "github" | "demo" | "linkedin" | "interview"
+  | "firmware" | "measurement" | "ci" | "release";
 
 export interface FlagshipQuestion {
   q: string;
@@ -297,7 +312,8 @@ export interface GlossaryTerm {
 
 export type InterviewCat =
   | "digital" | "hdl" | "rtl" | "verification" | "timing" | "asic" | "pd" | "dft"
-  | "arch" | "riscv" | "protocols" | "linux" | "programming" | "aihw" | "career";
+  | "arch" | "riscv" | "protocols" | "linux" | "programming" | "aihw" | "career"
+  | "firmware" | "rtos" | "emblinux";
 
 export interface BankQuestion {
   id: string;
@@ -335,6 +351,11 @@ export interface OpenSourceProject {
   beginnerUse: string;
   contribute: string;
   portfolio: string;
+  license?: string;
+  /** Exact files or directories worth reading. */
+  study?: string;
+  /** Concrete exercise to do with the code. */
+  exercise?: string;
 }
 
 export interface MasteryQuestion {

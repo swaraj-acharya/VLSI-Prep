@@ -231,6 +231,7 @@ export const P3: Topic[] = [
     inChip: "Every SoC; integration engineers and DV teams live in these protocols.",
     breaks: "Deadlocks in interconnects, wrong address maps, protocol violations between IP blocks.",
     tested: "Protocol assertions, verification IP, SoC-level integration tests.",
+    projects: ["fx-soc-peripheral"],
     prereqs: ["io-interrupts"],
     objectives: ["Describe manager/subordinate roles", "Compare APB, AHB, AXI and AXI-Stream", "Draw a simple SoC address map"],
     terms: [["Manager", "Initiates transactions (formerly 'master')"], ["Subordinate", "Responds to transactions (formerly 'slave')"], ["Crossbar", "Interconnect allowing parallel paths"]],

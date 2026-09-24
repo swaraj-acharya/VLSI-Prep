@@ -68,7 +68,7 @@ export function TopicRow({ t, s, showPhase }: { t: Topic; s: State; showPhase?: 
   return (
     <Link href={`/topics/${t.id}`} className="trow">
       <span className={`tick${done ? " on" : ""}`} aria-hidden="true">{done ? "✓" : ""}</span>
-      <span><span className="tt">{t.title}</span>{showPhase && <span className="tiny muted"> Phase {t.phase.slice(1)}</span>}<span className="sr-only">{done ? " (completed)" : ""}</span></span>
+      <span><span className="tt">{t.title}</span>{showPhase && <span className="tiny muted">{t.phase.startsWith("e") ? ` Embedded E${t.phase.slice(1)}` : ` Phase ${t.phase.slice(1)}`}</span>}<span className="sr-only">{done ? " (completed)" : ""}</span></span>
       <span className="meta">
         <PriorityBadge p={t.priority} />
         <span className="badge plain">{DEPTH_LABEL[t.depth]}</span>

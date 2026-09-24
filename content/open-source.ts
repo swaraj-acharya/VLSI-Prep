@@ -1,8 +1,9 @@
 import type { OpenSourceProject } from "./schema.ts";
+import { EXTRA_OPEN_SOURCE } from "./embedded-extra.ts";
 
 const gh = (r: string) => `https://github.com/${r}`;
 
-export const OPEN_SOURCE: OpenSourceProject[] = [
+const BASE_OPEN_SOURCE: OpenSourceProject[] = [
   { id: "os-verilator", name: "Verilator", url: gh("verilator/verilator"), what: "Fast open-source SystemVerilog simulator and linter.", why: "Used in industry CI and open cores; now elaborates upstream UVM 2017.", difficulty: "intermediate", prereqs: ["verilator-lint"], beginnerUse: "Lint and simulate all your designs.", contribute: "Report minimal reproducers for bugs; add tests; documentation fixes.", portfolio: "Merged issues or tests show real-world SV knowledge." },
   { id: "os-yosys", name: "Yosys", url: gh("YosysHQ/yosys"), what: "Open synthesis framework.", why: "Core of every open ASIC/FPGA flow.", difficulty: "intermediate", prereqs: ["synthesis"], beginnerUse: "Synthesize your blocks and read stats.", contribute: "Documentation, test cases, small passes.", portfolio: "Shows synthesis internals knowledge." },
   { id: "os-cocotb", name: "cocotb", url: gh("cocotb/cocotb"), what: "Python verification framework.", why: "Python-first DV; strong fit for your background.", difficulty: "beginner", prereqs: ["cocotb"], beginnerUse: "Write all early testbenches in cocotb.", contribute: "Docs, examples, bug reports; extension libraries.", portfolio: "Contributions are visible and reviewed." },
@@ -18,6 +19,7 @@ export const OPEN_SOURCE: OpenSourceProject[] = [
   { id: "os-sby", name: "SymbiYosys", url: gh("YosysHQ/sby"), what: "Formal verification front-end.", why: "Learn formal without licences.", difficulty: "intermediate", prereqs: ["formal"], beginnerUse: "Prove FIFO and arbiter properties.", contribute: "Examples and docs.", portfolio: "Formal proofs in your repos." },
   { id: "os-circuitnet", name: "CircuitNet", url: gh("circuitnet/CircuitNet"), what: "Open dataset for ML in EDA.", why: "Enables AI-for-EDA experiments.", difficulty: "intermediate", prereqs: ["ml-for-eda"], beginnerUse: "Reproduce a baseline.", contribute: "Reproducibility reports and examples.", portfolio: "Research evidence." },
 ];
+export const OPEN_SOURCE: OpenSourceProject[] = [...BASE_OPEN_SOURCE, ...EXTRA_OPEN_SOURCE];
 
 /** Contribution ladder shown on the Open Source page. */
 export const CONTRIB_LADDER = [

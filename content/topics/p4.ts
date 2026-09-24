@@ -143,6 +143,7 @@ export const P4: Topic[] = [
     inChip: "IP libraries, FIFOs, arbiters, crossbars, register banks.",
     breaks: "Parameter combinations never tested; $clog2 edge cases (depth 1); hierarchical names changing with generate.",
     tested: "Tests across parameter sets in regression; elaboration-time checks.",
+    projects: ["m-crc-rtl"],
     prereqs: ["verilog-basics"],
     objectives: ["Write parameterized modules", "Use generate loops and conditionals", "Test multiple parameter sets"],
     terms: [["localparam", "Parameter that cannot be overridden"], ["$clog2", "Ceiling log2, used for address widths"]],
@@ -316,5 +317,40 @@ export const P4: Topic[] = [
     practice: ["Build a generator-driver-monitor-scoreboard testbench for a FIFO using mailboxes (no UVM)"],
     interview: [{ q: "Explain fork...join_any and a common pitfall.", a: "It resumes when any child process finishes; the others keep running. Pitfall: forgetting to disable remaining processes, which then interfere with later test phases.", level: 2 }],
     resources: ["chipverify", "spear-sv"],
+  },
+  {
+    id: "rtl-hw-mapping", title: "RTL-to-hardware mapping: predict the circuit before synthesis", phase: "p4", module: "m4a",
+    priority: "must", depth: "working", difficulty: 3, days: 2, hours: 5, kind: "coding", skills: ["hdl", "rtl"],
+    why: "Interviewers show code and ask what hardware it becomes, and RTL designers must predict area and timing from code. The ChipCamp VLSI roadmap recommends keeping a table that maps each Verilog construct to its hardware.",
+    problem: "Writing Verilog like software produces surprise latches, long priority chains, oversized muxes, multiple drivers and silent width truncation that only show up after synthesis, or in silicon.",
+    eli12: "Every line of Verilog is an order to a factory. 'case' orders a selector switch, 'if/else' orders a queue where the first in line wins, and '+' orders an adding machine. Good designers can picture the machines before the factory builds them.",
+    analogyLimit: "Synthesis tools optimise aggressively, so the final gates may be restructured; the prediction is about the kind and rough size of hardware, not exact gates.",
+    tech: "Common mappings: assign with ?: and a full case -> multiplexer; if/else-if chains -> priority multiplexer chain (first true condition wins); casez or a loop that finds the first set bit -> priority encoder; ==, <, > -> comparators; + and - -> adders (architecture chosen by synthesis for timing); * -> multiplier array; always_ff with non-blocking assignments -> flip-flops, with enable -> a feedback mux or clock-gating cell, with async or sync reset -> different flop types; shifting registers -> shift register; FSM with a state register -> extracted state machine; arrays read and written synchronously -> RAM inference on FPGAs or flop arrays/SRAM macros on ASICs; constant tables -> ROM or logic; for loops unroll into parallel hardware; generate replicates instances. Hazards: an output not assigned on every path in combinational logic -> latch; two always blocks driving one signal -> multiple drivers; assigning a wider result to a narrower signal -> silent truncation; mixing signed and unsigned -> unsigned extension; combinational feedback -> loops. Workflow: RTL -> predict -> simulate -> synthesize (Yosys synth; stat; show) -> inspect -> compare -> explain.",
+    inChip: "Every RTL review includes 'what does this infer?'; synthesis logs and lint reports are read for latches, multiple drivers, width mismatches and loops.",
+    breaks: "Unexpected latches break timing and DFT, deep priority chains fail timing, truncation corrupts arithmetic, multiple drivers become X in simulation and errors in synthesis.",
+    tested: "Yosys stat/show compared with predictions; Verilator lint warnings (WIDTH, LATCH, MULTIDRIVEN, UNOPTFLAT); self-checking testbenches.",
+    prereqs: ["latch-inference", "hierarchy-generate", "seq-modeling"],
+    objectives: ["Predict the hardware for twelve common constructs", "Explain case versus if/else in hardware terms", "Recognise latch, multiple-driver, truncation, signedness and loop hazards from code", "Use Yosys to confirm predictions"],
+    terms: [["Priority encoder", "Outputs the index of the highest-priority active input"], ["Inference", "Synthesis deducing hardware from code patterns"], ["Multiple drivers", "Two processes assigning the same signal"], ["Width truncation", "Upper bits silently dropped on assignment"]],
+    code: { lang: "verilog", src: `// Same function, different hardware
+always @(*) begin               // parallel mux: select is one-hot or fully decoded
+  case (sel)
+    2'd0: y = a;  2'd1: y = b;  2'd2: y = c;  default: y = d;
+  endcase
+end
+
+always @(*) begin               // priority chain: req[0] wins over req[1] over req[2]
+  if (req[0])      g = 3'b001;
+  else if (req[1]) g = 3'b010;
+  else if (req[2]) g = 3'b100;
+  else             g = 3'b000;   // default assignment: no latch
+end`, note: "Synthesize both with Yosys and compare the structure shown by 'show'." },
+    mistakes: ["Assuming if/else and case always produce the same hardware", "Ignoring WIDTH warnings", "Using loops as if they run sequentially in time"],
+    practice: ["Build the construct-to-hardware table for twelve constructs and verify each with Yosys (micro project m-rtl-map)", "Write three snippets with hidden hazards (latch, truncation, multiple drivers) and find them from lint output alone"],
+    interview: [
+      { q: "What hardware does an if/else-if chain infer, and when would you prefer a case statement?", a: "A priority multiplexer chain in which earlier conditions win; its delay grows with the number of conditions. Prefer case (or unique/parallel case in SystemVerilog) when conditions are mutually exclusive, which gives a balanced mux.", level: 2, trap: "Saying they are always identical after synthesis." },
+      { q: "What does a for loop in synthesizable RTL become?", a: "The loop is unrolled at elaboration into parallel copies of the logic; it describes structure, not steps in time. Its bound must be a constant.", level: 2 },
+    ],
+    resources: ["nptel-verilog", "palnitkar-verilog", "chipcamp-vlsi", "yosys", "hdlbits"], projects: ["m-rtl-map", "m-crc-rtl"],
   },
 ];

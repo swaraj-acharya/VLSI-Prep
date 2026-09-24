@@ -7,7 +7,7 @@ import { TOPIC_MAP } from "@/content/topics";
 import { CERT_MAP } from "@/content/certifications";
 import { CAREER_MAP } from "@/content/careers";
 import { RESOURCE_MAP } from "@/content/resources";
-import { PROOF_STAGES, SHOWCASE_ITEMS } from "@/content/careerkit";
+import { DEFAULT_PROOF, PROOF_STAGES, SHOWCASE_ITEMS } from "@/content/careerkit";
 import type { Flagship, LearningProject } from "@/content/schema";
 import { actions, useHydrated, useStore } from "@/lib/store";
 import { projectPct } from "@/lib/derive";
@@ -48,6 +48,7 @@ function LearningView({ p }: { p: LearningProject }) {
         <span className="badge plain">About {p.hours} h</span>
       </div>
       <section className="panel"><h2>Specification</h2><ul className="list">{p.spec.map((x) => <li key={x}>{x}</li>)}</ul><p className="small"><span className="muted">Tools: </span>{p.tools.join(", ")}</p>{p.stretch && <p className="small"><span className="muted">Stretch: </span>{p.stretch}</p>}</section>
+      {(p.hardware || p.verify || p.expected || p.concepts?.length) && <section className="panel"><h2>Hardware, validation and interview value</h2><dl className="qa small">{p.level && <><dt>Level</dt><dd>{p.level}</dd></>}{p.hardware && <><dt>Hardware or emulator</dt><dd>{p.hardware}</dd></>}{p.verify && <><dt>How to verify</dt><dd>{p.verify}</dd></>}{p.expected && <><dt>Expected result</dt><dd>{p.expected}</dd></>}{p.concepts?.length ? <><dt>Interview concepts</dt><dd>{p.concepts.join(", ")}</dd></> : null}</dl></section>}
       <section className="panel"><div className="panel-head"><h2>Milestones</h2><span className="small muted">{Math.round(projectPct(s, p.id) * 100)}%</span></div><Bar value={projectPct(s, p.id)} label="Milestones complete" /><div style={{ marginTop: 8 }}><Milestones id={p.id} list={p.milestones} /></div></section>
       <section className="panel"><h2>Topics it builds on</h2><ul className="list">{p.topics.map((t) => <li key={t}><Link href={`/topics/${t}`}>{TOPIC_MAP[t]?.title}</Link></li>)}</ul></section>
       <section className="panel"><NotesBox noteKey={`project:${p.id}`} label="Project log" placeholder="What you did, what broke, what you learned." /></section>
@@ -60,7 +61,7 @@ function FlagshipView({ f }: { f: Flagship }) {
   const [tab, setTab] = useState("overview");
   useEffect(() => { const h = window.location.hash.slice(1); if (h) setTab(h); }, []);
   const ps = s.projects[f.id];
-  const stages = f.proof || PROOF_STAGES.map((x) => x.id);
+  const stages = f.proof || DEFAULT_PROOF;
   const proofDone = stages.filter((x) => ps?.proof[x]).length;
   const showDone = SHOWCASE_ITEMS.filter((x) => ps?.show[x.id]).length;
   const docReady = !!ps?.proof.documentation && showDone >= SHOWCASE_ITEMS.length - 3;

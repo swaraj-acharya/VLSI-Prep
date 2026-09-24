@@ -1,6 +1,7 @@
 import type { CareerPath } from "./schema.ts";
+import { EXTRA_CAREERS } from "./embedded-extra.ts";
 
-export const CAREERS: CareerPath[] = [
+const BASE_CAREERS: CareerPath[] = [
   {
     id: "rtl", title: "RTL design", track: "rtl", roleTarget: "rtl",
     does: "Turns specifications into microarchitecture and synthesizable Verilog/SystemVerilog, then works with verification, synthesis, STA, DFT and PD until the block is clean.",
@@ -126,5 +127,6 @@ export const CAREERS: CareerPath[] = [
     advanced: ["Research", "Tool productization"], projects: ["fp-ml-eda", "fp-llm-hw", "fp-macro-placement"], companies: ["EDA vendors", "Chip companies' CAD/AI groups", "Research labs"],
   },
 ];
+export const CAREERS: CareerPath[] = [...BASE_CAREERS, ...EXTRA_CAREERS];
 
 export const CAREER_MAP: Record<string, CareerPath> = Object.fromEntries(CAREERS.map((c) => [c.id, c]));

@@ -1,14 +1,16 @@
 import type { BankQuestion, InterviewCat } from "./schema.ts";
+import { EXTRA_BANK } from "./embedded-extra.ts";
 
 export const INTERVIEW_CATS: Record<InterviewCat, string> = {
   digital: "Digital logic", hdl: "HDL", rtl: "RTL design", verification: "Verification", timing: "Timing", asic: "ASIC flow",
   pd: "Physical design", dft: "DFT", arch: "Computer architecture", riscv: "RISC-V", protocols: "Protocols", linux: "Linux and scripting",
   programming: "Python and C/C++", aihw: "AI hardware", career: "Career and projects",
+  firmware: "Embedded firmware", rtos: "RTOS", emblinux: "Embedded Linux",
 };
 
 const q = (id: string, cat: InterviewCat, level: 1 | 2 | 3 | 4, concept: string, question: string, a: string, reasoning: string, trap: string, topics: string[]): BankQuestion => ({ id, cat, q: question, level, concept, a, reasoning, trap, topics });
 
-export const BANK: BankQuestion[] = [
+const BASE_BANK: BankQuestion[] = [
   q("b-mux-from-nand", "digital", 1, "Universal gates", "Build a 2:1 mux using only NAND gates.", "Y = NAND(NAND(A, ~S), NAND(B, S)) where ~S = NAND(S, S): four NAND gates total.", "Mux = A·~S + B·S; De Morgan turns the OR of products into NAND of NANDs.", "Forgetting to generate ~S with a NAND.", ["boolean-algebra", "mux-decoder"]),
   q("b-freq-div3", "digital", 3, "Counters and duty cycle", "Design a divide-by-3 clock with 50% duty cycle.", "Use a mod-3 counter on the rising edge and a flop on the falling edge; OR the rising-edge and falling-edge derived signals to get 1.5 cycles high out of 3.", "Odd division with 50% duty requires both edges.", "Producing a 33% duty cycle and calling it done; also using the result as a clock without constraints in real designs.", ["registers-counters", "clocking"]),
   q("b-nba-race", "hdl", 2, "Scheduling", "Two always blocks on the same clock: one does a = b; the other b = a; with blocking assignments. What happens?", "Result depends on which block the simulator runs first: a race. With non-blocking assignments both sample old values and swap correctly.", "Blocking updates are visible immediately to other processes in the same time step.", "Assuming simulation order is defined by file order.", ["blocking-nonblocking", "sim-semantics"]),
@@ -35,3 +37,4 @@ export const BANK: BankQuestion[] = [
   q("b-int8-acc", "aihw", 2, "Accumulators", "Why do INT8 MAC arrays use 32-bit accumulators?", "Each INT8 x INT8 product needs up to 16 bits; summing many products needs extra guard bits (log2 of the number of terms) to avoid overflow; 32 bits covers typical dot-product lengths.", "Width = 2N + log2(K).", "Using 16-bit accumulators.", ["matmul-mac", "fixed-point"]),
   q("b-roofline", "aihw", 3, "Roofline", "An accelerator has 4 TOPS peak and 50 GB/s bandwidth. A layer has intensity 20 ops/byte. What limits it?", "Ridge point = 4e12 / 50e9 = 80 ops/byte. At 20 ops/byte the layer is memory-bound: attainable ~ 50e9 x 20 = 1 TOPS.", "Compare intensity with ridge point.", "Assuming peak TOPS.", ["roofline"]),
 ];
+export const BANK: BankQuestion[] = [...BASE_BANK, ...EXTRA_BANK];

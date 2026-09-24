@@ -1,4 +1,4 @@
-import { MAIN_ROAD, PHASES } from "@/content/phases";
+import { ALL_PHASES, EMBEDDED_ROAD, MAIN_ROAD, phaseLabel } from "@/content/phases";
 import { TOPIC_MAP, UNLOCKS } from "@/content/topics";
 import type { Flagship, GlossaryTerm, Topic } from "@/content/schema";
 import type { ProjState } from "./store";
@@ -13,18 +13,20 @@ const DEPTH_TEXT: Record<string, string> = {
 
 /** A topic-aware teaching prompt: uses the learner's position, neighbours and the topic's own data. */
 export function topicPrompt(t: Topic, learner = "Swaraj"): string {
-  const idx = MAIN_ROAD.indexOf(t.id);
-  const prev = idx > 0 ? TOPIC_MAP[MAIN_ROAD[idx - 1]] : undefined;
-  const next = idx >= 0 && idx < MAIN_ROAD.length - 1 ? TOPIC_MAP[MAIN_ROAD[idx + 1]] : undefined;
-  const phase = PHASES.find((p) => p.id === t.phase)!;
+  const emb = t.phase.startsWith("e");
+  const road = emb ? EMBEDDED_ROAD : MAIN_ROAD;
+  const idx = road.indexOf(t.id);
+  const prev = idx > 0 ? TOPIC_MAP[road[idx - 1]] : undefined;
+  const next = idx >= 0 && idx < road.length - 1 ? TOPIC_MAP[road[idx + 1]] : undefined;
+  const phase = ALL_PHASES.find((p) => p.id === t.phase)!;
   const prereqs = t.prereqs.map((p) => TOPIC_MAP[p]?.title).filter(Boolean);
   const unlocks = (UNLOCKS[t.id] || []).map((u) => TOPIC_MAP[u]?.title).filter(Boolean).slice(0, 4);
   const terms = t.terms.map(([k]) => k).join(", ");
-  const codeLang = t.code?.lang || (t.skills.includes("verification") ? "SystemVerilog" : t.skills.includes("python") ? "Python" : t.skills.includes("tcl") ? "Tcl" : "Verilog/SystemVerilog");
-  return `You are teaching an intelligent 12-year-old who has never seen this topic. The learner, ${learner}, is actually an Electrical Engineering graduate with a JavaScript/MERN software background and no formal VLSI training, following a structured VLSI roadmap. Use the child-level intuition first, then build real engineering depth on top of it.
+  const codeLang = t.code?.lang || (emb ? "C" : t.skills.includes("verification") ? "SystemVerilog" : t.skills.includes("python") ? "Python" : t.skills.includes("tcl") ? "Tcl" : "Verilog/SystemVerilog");
+  return `You are teaching an intelligent 12-year-old who has never seen this topic. The learner, ${learner}, is actually an Electrical Engineering graduate with a JavaScript/MERN software background and no formal VLSI training, following a structured ${emb ? "embedded engineering" : "VLSI"} roadmap. Use the child-level intuition first, then build real engineering depth on top of it.
 
 TOPIC: ${t.title}
-Roadmap position: Phase ${phase.num} (${phase.title}). ${prev ? `Previous topic: ${prev.title}.` : ""} ${next ? `Next topic: ${next.title}.` : ""}
+Roadmap position: ${phaseLabel(phase)} (${phase.title}). ${prev ? `Previous topic: ${prev.title}.` : ""} ${next ? `Next topic: ${next.title}.` : ""}
 Target depth: ${DEPTH_TEXT[t.depth]}.
 Already covered prerequisites: ${prereqs.length ? prereqs.join(", ") : "none"}.
 Why it matters here: ${t.why}

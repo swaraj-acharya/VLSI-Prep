@@ -192,6 +192,7 @@ export const P0_P1: Topic[] = [
     inChip: "Standard cell libraries contain NAND, NOR, AOI, OAI, XOR and flops in many sizes. Synthesis picks among them to meet timing and area.",
     breaks: "Tall transistor stacks become slow; synthesis avoids them, but custom designers must watch for them.",
     tested: "Transistor-level simulation and library characterization.",
+    projects: ["m-inverter-spice"],
     prereqs: ["cmos-inverter"],
     objectives: ["Draw NAND2 and NOR2 in CMOS", "Explain series vs parallel networks", "Explain why NAND is usually preferred to NOR"],
     terms: [["Pull-up network", "PMOS network connecting output to VDD"], ["Pull-down network", "NMOS network connecting output to ground"], ["AOI", "AND-OR-INVERT complex gate"]],

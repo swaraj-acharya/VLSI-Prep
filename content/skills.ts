@@ -21,10 +21,13 @@ export const SKILLS: { id: SkillId; name: string; what: string }[] = [
   { id: "aihw", name: "AI hardware", what: "MAC arrays, dataflows, quantization, accelerators." },
   { id: "eda", name: "EDA", what: "Algorithms and tools that design chips." },
   { id: "interview", name: "Interview skills", what: "Explaining, whiteboarding, project stories." },
+  { id: "firmware", name: "Embedded firmware", what: "MCU architecture, bare metal, peripherals, interrupts, DMA, drivers, debugging." },
+  { id: "rtos", name: "RTOS", what: "Real-time analysis, FreeRTOS, Zephyr, synchronisation." },
+  { id: "emblinux", name: "Embedded Linux", what: "Boot chain, device tree, kernel drivers, Buildroot, Yocto." },
 ];
 
 /** Target level per skill for each primary target (0 Awareness .. 4 Research). */
-const base: Record<SkillId, number> = { digital: 3, hdl: 3, rtl: 2, verification: 2, timing: 2, asic: 1, pd: 1, dft: 1, arch: 2, linux: 2, python: 2, tcl: 1, cpp: 1, protocols: 2, riscv: 1, aihw: 0, eda: 0, interview: 3 };
+const base: Record<SkillId, number> = { digital: 3, hdl: 3, rtl: 2, verification: 2, timing: 2, asic: 1, pd: 1, dft: 1, arch: 2, linux: 2, python: 2, tcl: 1, cpp: 1, protocols: 2, riscv: 1, aihw: 0, eda: 0, interview: 3, firmware: 0, rtos: 0, emblinux: 0 };
 export const TARGETS: Record<string, Record<SkillId, number>> = {
   rtl: { ...base, rtl: 3, timing: 3, asic: 2, protocols: 3, riscv: 2 },
   dv: { ...base, verification: 3, python: 3, cpp: 2, protocols: 3 },

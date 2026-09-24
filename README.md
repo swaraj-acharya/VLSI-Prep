@@ -1,6 +1,8 @@
-# Signoff: a personal VLSI training system
+# Signoff: a personal VLSI and embedded training system
 
 Signoff turns a year of VLSI learning into one clear mission per day, with spaced revision, confidence and evidence tracking, flagship projects, proof of work and an honest view of job readiness. It is built for an Electrical Engineering graduate with a software background and no formal VLSI specialization, aiming for an entry-level chip-design role with unusually deep understanding.
+
+A second, self-paced **Embedded Engineering road** (added September 2026) runs alongside it: C for embedded, MCU architecture and toolchains, bare-metal peripherals, interrupts and DMA, debugging and testing, RTOS, networking, secure boot and OTA, embedded Linux/BSP and specializations, joined to the VLSI road by an RTL-to-driver crossover. It has its own progress tracking and never changes the VLSI day plan.
 
 In chip design, *signoff* is the final set of checks that proves a design is ready for tapeout. The app is organised around the same idea: progress means evidence, not days completed.
 
@@ -18,8 +20,8 @@ Other scripts:
 
 | Command | What it does |
 | --- | --- |
-| `npm run validate` | Checks every cross-reference in the curriculum (prerequisites, resources, projects, papers, certifications, careers, readiness checks) and that prerequisites come before the topics that need them. Runs automatically before `build`. |
-| `npm run build` | Production build. All 220 pages are pre-rendered as static HTML. |
+| `npm run validate` | Checks every cross-reference in the curriculum (prerequisites, resources, projects, papers, certifications, careers, readiness checks), prerequisite order on both the VLSI main road and the Embedded core road, duplicate IDs, unknown phases, embedded page data, and that every embedded project states its hardware or emulator option. Runs automatically before `build`. |
+| `npm run build` | Production build. All 346 pages are pre-rendered as static HTML. |
 | `npm start` | Serve the production build locally. |
 | `npm run check-links` | Requests every stored URL and reports failures (needs internet). |
 | `npm run typecheck` | TypeScript check without building. |
@@ -63,8 +65,13 @@ components/          AppShell (navigation, search, theme), ui.tsx (primitives), 
                      (waveform week, heatmap, revision card, mastery test runner)
 content/             The curriculum as typed data. Edit here; the UI follows.
   schema.ts          All content types
-  phases.ts          13 phases, modules, 9 specialization tracks, the main road order
-  topics/            175 topics split by phase; index.ts builds TOPIC_MAP and UNLOCKS
+  phases.ts          13 VLSI phases, 11 Embedded phases (e0-e10), modules, 9 specialization tracks,
+                     MAIN_ROAD (VLSI day plan) and EMBEDDED_ROAD (self-paced)
+  topics/            238 topics: 176 VLSI (p*.ts) and 62 Embedded (embedded-a/b/c.ts); index.ts builds TOPIC_MAP and UNLOCKS
+  embedded.ts        Embedded page data: levels, role paths, boards, toolchain matrix, crossover, templates, research notes
+  embedded-extra.ts  Resources, careers, interview bank, mastery tests, practice, glossary and open-source study guides added in 2026-09
+  projects-extra.ts  VLSI micro/weekend projects and Embedded micro/weekend projects (incl. debugging labs)
+  flagship-embedded.ts  Embedded and crossover flagships
   roles-guide.ts     Plain-language role explainers, pay and demand reality with sources
   global.ts          Senior-compensation ladder, international hubs, visa notes, application playbook
   projects.ts        Micro and mini learning projects, suggested project per phase
@@ -85,7 +92,7 @@ public/fonts/        IBM Plex Sans and Mono (SIL Open Font License, see LICENSE 
 
 ## How progress works
 
-**The plan.** The main road (152 topics) is laid out as 53 weeks: five learning days, one consolidation day and one project day per week, with a milestone day every fourth week, plus a graduation day (372 days in total). Day numbers are units of study, not calendar dates: missing a day never shifts or deletes anything, and the app offers catch-up options instead of penalties. After the specialization gate, seven days follow your primary track and four a compressed secondary track.
+**The plan.** The VLSI main road (153 topics) is laid out as 54 weeks: five learning days, one consolidation day and one project day per week, with a milestone day every fourth week, plus a graduation day (376 days in total; the September 2026 update added the two-day RTL-to-hardware mapping topic at day 130, so earlier days and recorded progress are unchanged). Embedded topics are never placed on the day plan. Day numbers are units of study, not calendar dates: missing a day never shifts or deletes anything, and the app offers catch-up options instead of penalties. After the specialization gate, seven days follow your primary track and four a compressed secondary track.
 
 **Intensity** (Light, Standard, Intensive) changes the number and depth of daily tasks and the daily revision cap. It never changes the curriculum order.
 
@@ -100,6 +107,18 @@ public/fonts/        IBM Plex Sans and Mono (SIL Open Font License, see LICENSE 
 **Job readiness** evaluates each entry-level role's checks automatically from your data; items only you can confirm (for example "resume ready") are manual ticks.
 
 **Flagship completion** is locked until the Documentation stage and most showcase items are done, because an undocumented project is not yet evidence.
+
+## The Embedded Engineering road
+
+Open **Embedded** in the sidebar (`/embedded`). It is self-paced: completed embedded topics join the same spaced-revision queue as VLSI topics, each embedded phase has a mastery test, and progress is shown per phase and for the 57-topic core road (about 97 study days).
+
+- **Default path:** C → MCU → bare metal → peripherals → interrupts/DMA → debugging → RTOS → networking → boot/OTA/security → Linux/BSP → specialization. Branches in E10 (automotive, robotics/control, DSP, TinyML, bring-up) are optional.
+- **Shared foundations:** electronics, number systems, digital logic, ISA and Linux basics are taught once on the VLSI road and linked from the Embedded road.
+- **Hardware:** one primary board (STM32 Nucleo with on-board probe, or Pico 2 + debug probe) plus an emulator (Renode/QEMU). Every embedded project states the hardware it needs and any emulator-only option.
+- **Projects:** micro projects and debugging labs (30 min to 6 h), weekend projects (6 to 16 h), and flagships including a secure-OTA production platform, an embedded Linux BSP and the VLSI + Embedded crossover flagship (custom peripheral from SystemRDL and RTL to driver on an FPGA SoC).
+- **Careers:** firmware, embedded Linux/BSP, automotive, IoT and edge-AI role paths appear on the Embedded page and on Career paths.
+
+Versions were checked on 2026-09-24 (Zephyr v4.4.2, ESP-IDF v6.1, FreeRTOS kernel V11.3.1, MCUboot v2.4.0, U-Boot v2026.07, Buildroot 2026.08, Yocto 6.0 "Wrynose" LTS, where the poky repository is deprecated in favour of `bitbake-setup`).
 
 ## Choosing a target role, pay and going abroad
 
@@ -141,7 +160,7 @@ Security notes, worth reading once:
 
 ## Editing the curriculum
 
-1. Add or edit a topic in the right `content/topics/*.ts` file (the `Topic` type in `schema.ts` documents every field).
+1. Add or edit a topic in the right `content/topics/*.ts` file (the `Topic` type in `schema.ts` documents every field). Embedded topics go in `embedded-*.ts` with a phase `e0`-`e10`; list them in an embedded module in `phases.ts` and on the Level map in `embedded.ts`.
 2. List the topic ID in its module's `topics` array in `content/phases.ts`, in teaching order.
 3. Reference resources, projects, papers, certifications and careers by ID only.
 4. Run `npm run validate`. It reports missing references and any topic that appears before one of its prerequisites.
@@ -152,7 +171,7 @@ Adding a flagship project, paper or certification works the same way: add the en
 ## Honesty conventions
 
 - Every URL-bearing resource, paper and certification has `verified` and a check date. Items not confirmed in the last research pass show an **Unverified** badge. Books are listed without links by design.
-- Certification details, job-market patterns and programme information were researched on 2026-09-22. Prices, programmes and job postings change: confirm on the official page before paying or applying. Several sampled job postings are expired and are kept as dated historical examples.
+- Certification details, job-market patterns and programme information were researched on 2026-09-22. The Embedded road, its resources, job patterns and the GitHub leads were researched on 2026-09-24: every GitHub repository was confirmed with `git ls-remote` and its archive status and licence read from GitHub (PicoRV32 is archived and now marked as a historical reference; `fpganinja/taxi` is CERN-OHL-S, so read and learn from it but mind reciprocity before copying code). Prices, programmes and job postings change: confirm on the official page before paying or applying. Several sampled job postings are expired and are kept as dated historical examples.
 - No salary benchmarks are presented. One posting's listed range is shown as a single data point only.
 - To re-verify: run `npm run check-links`, open any failures in a browser (some sites block automated requests), then update `verified` and `lastChecked`/`lastVerified` in the content files.
 

@@ -29,6 +29,7 @@ export const P5: Topic[] = [
     inChip: "Every block from CPUs to DMA engines. Microarchitecture documents describe both parts.",
     breaks: "Control and data getting out of step by a cycle (off-by-one pipeline alignment).",
     tested: "Unit tests for datapath, FSM coverage for control, integration tests.",
+    projects: ["m-pwm-rtl"],
     prereqs: ["rtl-guidelines", "fsm"],
     objectives: ["Split a design into datapath and control", "Write a control-signal table", "Implement a multi-cycle algorithm (for example GCD)"],
     terms: [["Status signal", "Datapath output informing control (zero, overflow)"], ["Control word", "Set of control signals for one cycle"]],
@@ -187,7 +188,7 @@ export const P5: Topic[] = [
     practice: ["Build UART loopback and test 1,000 random bytes", "Run it on an FPGA or in simulation with a 2% baud mismatch"],
     interview: [{ q: "Why do UART receivers oversample?", a: "There is no shared clock, so the receiver must find the bit centres. Oversampling (for example 16x) lets it detect the start edge and sample in the middle of each bit, tolerating small baud mismatch.", level: 1 }],
     resources: ["nandland", "chipverify"],
-    projects: ["m-uart"],
+    projects: ["m-fpga-uart", "m-uart"],
   },
   {
     id: "spi-i2c", title: "SPI and I2C", phase: "p5", module: "m5c",
@@ -286,7 +287,7 @@ export const P5: Topic[] = [
     interview: [{ q: "How do you transfer a single-cycle pulse from a 500 MHz domain to a 50 MHz domain?", a: "A two-flop synchronizer could miss it. Convert the pulse to a level toggle in the source domain, synchronize the toggle, and edge-detect it in the destination (toggle synchronizer), or stretch the pulse with a handshake.", level: 3 }],
     resources: ["sunburst", "zipcpu"],
     papers: ["ginosar-sync"],
-    projects: ["fp-async-fifo"],
+    projects: ["m-cdc-sync", "m-mtbf-calc", "fp-async-fifo"],
   },
   {
     id: "async-fifo", title: "Asynchronous FIFO with Gray-code pointers", phase: "p5", module: "m5d",

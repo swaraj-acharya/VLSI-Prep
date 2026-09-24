@@ -31,6 +31,7 @@ export default function RoadmapPage() {
   return (
     <div className="page">
       <PageHead title="Roadmap">One main road from electricity to job readiness. Specialization comes after the core, and AI is a layer on top of fundamentals, not a shortcut around them.</PageHead>
+      <div className="callout small" style={{ marginBottom: 14 }}>Hardware careers overlap. The self-paced <Link href="/embedded">Embedded Engineering road</Link> reuses this road's foundations and meets it in the <Link href="/topics/emb-hwsw-crossover">RTL-to-driver crossover</Link>; your day plan here is unchanged.</div>
       <div className="between" style={{ marginBottom: 14 }}>
         <p className="small muted" style={{ margin: 0 }}>Gates are soft: take the previous phase's test (80% target) or continue with a warning.</p>
         {s.settings.mode === "learn" && <label className="row small"><input type="checkbox" checked={showResearch} onChange={(e) => setShowResearch(e.target.checked)} /> Show research-level topics</label>}

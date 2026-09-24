@@ -7,7 +7,7 @@ export interface PoolQ { id: string; cat: InterviewCat; q: string; a: string; le
 const SKILL_CAT: Record<SkillId, InterviewCat> = {
   digital: "digital", hdl: "hdl", rtl: "rtl", verification: "verification", timing: "timing", asic: "asic", pd: "pd", dft: "dft",
   arch: "arch", linux: "linux", python: "programming", tcl: "programming", cpp: "programming", protocols: "protocols", riscv: "riscv",
-  aihw: "aihw", eda: "asic", interview: "career",
+  aihw: "aihw", eda: "asic", interview: "career", firmware: "firmware", rtos: "rtos", emblinux: "emblinux",
 };
 
 export const POOL: PoolQ[] = [

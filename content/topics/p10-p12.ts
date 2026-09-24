@@ -505,7 +505,7 @@ export const P10_P12: Topic[] = [
     mistakes: ["Only reading answers without answering aloud"],
     practice: ["Do a 20-question mock session and record weak categories"],
     interview: [{ q: "Explain your flagship project in two minutes.", a: "Problem, architecture, your role, verification approach, key results with numbers, one hard bug, one tradeoff, what you would improve.", level: 2 }],
-    resources: [],
+    resources: ["indiabix", "gfg-puzzles", ],
   },
   {
     id: "job-search", title: "Job search strategy without an M.Tech", phase: "p12", module: "m12c",

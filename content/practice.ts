@@ -1,6 +1,7 @@
 import type { PracticeItem } from "./schema.ts";
+import { EXTRA_PRACTICE } from "./embedded-extra.ts";
 
-export const PRACTICE: PracticeItem[] = [
+const BASE_PRACTICE: PracticeItem[] = [
   // Beginner RTL
   { id: "pr-edge", title: "Rising-edge detector", type: "rtl", level: "beginner", phase: "p4", topics: ["seq-modeling"],
     prompt: "Write a module that outputs a one-cycle pulse when input `sig` goes from 0 to 1. `sig` is synchronous to clk.",
@@ -102,3 +103,4 @@ export const PRACTICE: PracticeItem[] = [
     hints: ["Where is the power going (clock, memory, datapath)?", "Can you trade the spare throughput?"],
     solution: "Measure breakdown first. Options: clock gating idle lanes, operand isolation, lower frequency/voltage using the 30% headroom (biggest lever via V^2), fewer SRAM accesses via better reuse, narrower datapaths via quantization. Risks: timing at lower voltage, verification of gating, accuracy." },
 ];
+export const PRACTICE: PracticeItem[] = [...BASE_PRACTICE, ...EXTRA_PRACTICE];

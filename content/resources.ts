@@ -1,4 +1,5 @@
 import type { Resource, ResourceType } from "./schema.ts";
+import { EXTRA_RESOURCES } from "./embedded-extra.ts";
 
 const CHECKED = "2026-09-22";
 
@@ -15,7 +16,7 @@ const book = (id: string, title: string, source: string, note?: string): Resourc
   id, title, type: "textbook", source, free: false, verified: false, lastChecked: "n/a", note,
 });
 
-export const RESOURCES: Resource[] = [
+const BASE_RESOURCES: Resource[] = [
   // Courses, lectures and practice sites
   web("hdlbits", "HDLBits: Verilog practice problems with instant feedback", "practice", "https://hdlbits.01xz.net/wiki/Main_Page", "HDLBits (Henry Wong)", true, "Do the problem set alongside Phases 2 and 4."),
   web("chipverify", "ChipVerify: Verilog, SystemVerilog and UVM tutorials and examples", "reading", "https://www.chipverify.com/verilog/verilog-examples", "ChipVerify", true),
@@ -90,7 +91,7 @@ export const RESOURCES: Resource[] = [
   gh("chipyard", "ucb-bar/chipyard", "Chipyard: SoC generator framework", "tool"),
   gh("litex", "enjoy-digital/litex", "LiteX: build FPGA SoCs quickly", "tool"),
   gh("vexriscv", "SpinalHDL/VexRiscv", "VexRiscv: configurable RISC-V soft core", "reading"),
-  gh("picorv32", "YosysHQ/picorv32", "PicoRV32: small RISC-V core (archived)", "reading", "Repository is archived; fine for study, not for new contributions."),
+  gh("picorv32", "YosysHQ/picorv32", "PicoRV32: small RISC-V core (archived)", "reading", "Archived upstream (checked 2026-09-24): still a compact, readable reference core; for maintained study code prefer Ibex or VeeR EL2."),
   gh("nextpnr", "YosysHQ/nextpnr", "nextpnr: open FPGA place and route", "tool"),
   gh("apicula", "YosysHQ/apicula", "Project Apicula: open tools for Gowin FPGAs", "tool"),
   gh("gemmini", "ucb-bar/gemmini", "Gemmini: systolic-array accelerator generator", "reading"),
@@ -118,5 +119,6 @@ export const RESOURCES: Resource[] = [
   book("razavi-analog", "Design of Analog CMOS Integrated Circuits (Razavi)", "McGraw-Hill"),
   book("sze-book", "Efficient Processing of Deep Neural Networks (Sze, Chen, Yang, Emer)", "Morgan & Claypool"),
 ];
+export const RESOURCES: Resource[] = [...BASE_RESOURCES, ...EXTRA_RESOURCES];
 
 export const RESOURCE_MAP: Record<string, Resource> = Object.fromEntries(RESOURCES.map((r) => [r.id, r]));

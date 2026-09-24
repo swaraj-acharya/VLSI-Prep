@@ -1,8 +1,9 @@
 import type { GlossaryTerm } from "./schema.ts";
+import { EXTRA_GLOSSARY } from "./embedded-extra.ts";
 
 const g = (term: string, full: string | undefined, simple: string, technical: string, topic?: string, art?: string): GlossaryTerm => ({ term, full, simple, technical, topic, art });
 
-export const GLOSSARY: GlossaryTerm[] = [
+const BASE_GLOSSARY: GlossaryTerm[] = [
   g("RTL", "Register-transfer level", "A description of a chip as memory boxes and the logic between them.", "Abstraction describing registers and combinational transfers per clock, written in Verilog/SystemVerilog/VHDL and synthesized to gates.", "hdl-mindset"),
   g("FSM", "Finite state machine", "A machine that is always in one of a few states and follows rules to move between them.", "Sequential circuit with a state register, next-state logic and output logic (Moore or Mealy).", "fsm"),
   g("STA", "Static timing analysis", "Checking every route through a circuit for being too slow or too fast, without running it.", "Vectorless timing verification computing arrival, required times and slack across all paths, corners and modes.", "sta"),
@@ -68,3 +69,4 @@ export const GLOSSARY: GlossaryTerm[] = [
   g("Scoreboard", undefined, "The part of a testbench that checks answers.", "Component comparing predicted and observed transactions.", "layered-tb"),
   g("Backpressure", undefined, "The receiver saying 'slow down, I'm full'.", "Flow control where a consumer deasserts ready to stall a producer.", "valid-ready"),
 ];
+export const GLOSSARY: GlossaryTerm[] = [...BASE_GLOSSARY, ...EXTRA_GLOSSARY];

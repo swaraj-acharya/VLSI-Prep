@@ -1,10 +1,11 @@
 import type { MasteryTest, MonthMilestone } from "./schema.ts";
+import { EXTRA_MASTERY } from "./embedded-extra.ts";
 
 type Q = MasteryTest["questions"][number];
 const mc = (id: string, type: Q["type"], q: string, options: string[], answer: number, explain: string): Q => ({ id, type, q, options, answer, explain });
 const op = (id: string, type: Q["type"], q: string, answer: string, explain = ""): Q => ({ id, type, q, answer, explain });
 
-export const MASTERY: MasteryTest[] = [
+const BASE_MASTERY: MasteryTest[] = [
   { phase: "p0", title: "Diagnostic: where do you stand?", questions: [
     mc("d1", "concept", "Which step turns RTL into a gate-level netlist?", ["Place and route", "Synthesis", "Tapeout", "LVS"], 1, "Synthesis maps RTL to standard cells."),
     mc("d2", "numerical", "What is 0x2F in decimal?", ["47", "32", "63", "45"], 0, "2x16 + 15 = 47."),
@@ -99,6 +100,7 @@ export const MASTERY: MasteryTest[] = [
     op("j3", "interview", "Deep-dive: your best flagship, including a tradeoff you made.", "Architecture, verification, results, tradeoff reasoning."),
   ]},
 ];
+export const MASTERY: MasteryTest[] = [...BASE_MASTERY, ...EXTRA_MASTERY];
 
 export const MASTERY_MAP: Record<string, MasteryTest> = Object.fromEntries(MASTERY.map((m) => [m.phase, m]));
 

@@ -1,8 +1,9 @@
 import type { LearningProject } from "./schema.ts";
+import { EMBEDDED_PROJECTS, VLSI_EXTRA_PROJECTS } from "./projects-extra.ts";
 
 const ms = (id: string, title: string, detail: string, evidence?: string) => ({ id, title, detail, evidence });
 
-export const LEARNING_PROJECTS: LearningProject[] = [
+const BASE_LEARNING_PROJECTS: LearningProject[] = [
   {
     id: "m-counter", title: "Hello hardware: counter, testbench and waveform", tier: "micro", phase: "p0", afterTopic: "lab-setup",
     summary: "Prove your lab works end to end with the smallest real design.", hours: 3,
@@ -96,6 +97,7 @@ export const LEARNING_PROJECTS: LearningProject[] = [
     topics: ["systolic", "matmul-mac"], skills: ["aihw", "python"], tools: ["Python", "NumPy"],
   },
 ];
+export const LEARNING_PROJECTS: LearningProject[] = [...BASE_LEARNING_PROJECTS, ...[...VLSI_EXTRA_PROJECTS, ...EMBEDDED_PROJECTS]];
 
 export const LEARNING_MAP: Record<string, LearningProject> = Object.fromEntries(LEARNING_PROJECTS.map((p) => [p.id, p]));
 

@@ -8,7 +8,7 @@ import { search, type Hit } from "@/lib/search";
 import { Dialog, Icon } from "./ui";
 
 export const NAV: { group: string; links: [string, string, string][] }[] = [
-  { group: "Learn", links: [["/", "Home", "home"], ["/today", "Today", "today"], ["/roadmap", "Roadmap", "map"], ["/topics", "Topics", "book"], ["/practice", "Practice", "code"], ["/interview", "Interview", "chat"]] },
+  { group: "Learn", links: [["/", "Home", "home"], ["/today", "Today", "today"], ["/roadmap", "Roadmap", "map"], ["/embedded", "Embedded", "cpu"], ["/topics", "Topics", "book"], ["/practice", "Practice", "code"], ["/interview", "Interview", "chat"]] },
   { group: "Build", links: [["/projects", "Projects", "build"], ["/research", "Research lab", "flask"], ["/open-source", "Open source", "layers"]] },
   { group: "Career", links: [["/roles", "Roles and pay", "target"], ["/skills", "My skills", "grid"], ["/job-readiness", "Job readiness", "target"], ["/portfolio", "Portfolio", "folder"], ["/build-in-public", "Build in public", "users"], ["/certifications", "Certifications", "award"], ["/career-paths", "Career paths", "path"]] },
   { group: "Library", links: [["/resources", "Resources", "book"], ["/glossary", "Glossary", "spark"], ["/toolkit", "Toolkit", "cpu"]] },
@@ -112,7 +112,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       </div>
       <div className="shell">
         <aside className="side">
-          <Link href="/" className="brand"><Logo /><span>Signoff<small>VLSI training system</small></span></Link>
+          <Link href="/" className="brand"><Logo /><span>Signoff<small>VLSI + embedded training</small></span></Link>
           <button className="searchbtn" onClick={() => setSearchOpen(true)}><span className="row" style={{ gap: 6 }}><Icon name="search" size={16} /> Search</span><kbd>Ctrl K</kbd></button>
           {navList}
           <p className="tiny muted" style={{ margin: "6px 6px 0" }}>{st.current} day streak, longest {st.longest}</p>

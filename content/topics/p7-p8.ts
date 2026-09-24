@@ -94,7 +94,7 @@ export const P7_P8: Topic[] = [
     practice: ["Run OpenSTA on your synthesized ALU at three clock periods and record WNS/TNS", "Annotate every line of one path report"],
     interview: [{ q: "Why is STA preferred over dynamic timing simulation for sign-off?", a: "STA checks all paths exhaustively without test vectors and runs much faster; timing simulation only covers exercised paths. STA assumes synchronous design, so asynchronous crossings need separate checks.", level: 2 }],
     resources: ["opensta", "bhasker-sta", "orfs"],
-    projects: ["fp-ppa-arith"],
+    projects: ["m-timing-parser", "m-opensta-lab", "fp-ppa-arith"],
   },
   {
     id: "clock-effects", title: "Clock skew, jitter, uncertainty and hold fixing", phase: "p7", module: "m7b",
@@ -263,7 +263,7 @@ export const P7_P8: Topic[] = [
     practice: ["Explain how a stuck-at-0 fault on an AND gate input is detected by a scan pattern"],
     interview: [{ q: "How does scan testing work?", a: "In shift mode, flops form chains; the tester shifts a pattern in. In capture mode, one functional clock applies the logic between flops. Then the captured values are shifted out and compared with expected values to detect faults.", level: 2 }],
     resources: ["bushnell-agrawal", "fault"],
-    projects: ["fp-dft-atpg"],
+    projects: ["m-scan-chain", "m-jtag-tap", "fp-dft-atpg"],
   },
   {
     id: "tapeout", title: "Tapeout, fabrication and post-silicon validation", phase: "p7", module: "m7d",

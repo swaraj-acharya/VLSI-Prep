@@ -124,6 +124,7 @@ export function interviewStats(s: State, cats?: string[]) {
 const SKILL_TO_CATS: Partial<Record<SkillId, string[]>> = {
   digital: ["digital"], hdl: ["hdl"], rtl: ["rtl"], verification: ["verification"], timing: ["timing"], asic: ["asic"], pd: ["pd"], dft: ["dft"],
   arch: ["arch"], riscv: ["riscv"], protocols: ["protocols"], linux: ["linux"], python: ["programming"], cpp: ["programming"], aihw: ["aihw"],
+  firmware: ["firmware"], rtos: ["rtos"], emblinux: ["emblinux"],
 };
 
 export interface SkillReport { id: SkillId; level: number; completed: number; total: number; must: number; mustDone: number; projects: string[]; papers: string[]; reasons: string[] }
